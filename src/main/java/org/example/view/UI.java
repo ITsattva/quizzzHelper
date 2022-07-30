@@ -26,7 +26,7 @@ public class UI extends JFrame{
     private JTextField answer3 = new JTextField("", 5);
 
     public UI() {
-        super("Main frame");
+        super("Quizzz Helper");
         this.setBounds(450, 200, 400, 350);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
