@@ -10,11 +10,13 @@ import java.sql.SQLException;
 public class DBHelper {
 
     private static Connection connection = null;
+    private static String table = "";
 
     static {
         try {
             Class.forName("org.sqlite.JDBC");
             connection = DriverManager.getConnection("jdbc:sqlite:C:\\SQLite\\questions.db");
+            table = "sport";
             System.out.println("Connected to DB");
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
@@ -24,7 +26,8 @@ public class DBHelper {
     }
 
     public void insertIntoDB(Question question) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement("INSERT INTO sport(description, answer1, answer2, answer3, answer4) VALUES (?, ?, ?, ?, ?)");
+        PreparedStatement statement = connection.prepareStatement("INSERT INTO " + table + " (description, answer1, answer2, answer3, answer4) VALUES (?, ?, ?, ?, ?)");
+        System.out.println(statement.toString());
         statement.setString(1, question.getDescription());
         statement.setString(2, question.getAnswer1());
         statement.setString(3, question.getAnswer2());
@@ -33,6 +36,10 @@ public class DBHelper {
 
         statement.executeUpdate();
         statement.close();
+    }
+
+    public void setTable(String table){
+        this.table = table;
     }
 
 }

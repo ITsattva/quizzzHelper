@@ -3,15 +3,19 @@ package org.example.view;
 import org.example.db.DBHelper;
 import org.example.model.Question;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.sql.SQLException;
-import java.util.EventListener;
 import javax.swing.*;
-import javax.swing.plaf.basic.BasicOptionPaneUI;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.SQLException;
 
 public class UI extends JFrame{
     private DBHelper dbHelper = new DBHelper();
+
+    private JLabel tableLabel = new JLabel("Choose correct table:");
+    private String[] tables = {"sport", "muscles"};
+    private JComboBox optionPane = new JComboBox(tables);
+
     private JButton button = new JButton("Send question to DataBase");
     private JLabel labelQuestion = new JLabel("Enter question's description:");
     private JTextField question = new JTextField("", 5);
@@ -31,7 +35,11 @@ public class UI extends JFrame{
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         Container container = this.getContentPane();
-        container.setLayout(new GridLayout(6, 3, 2, 2));
+        container.setLayout(new GridLayout(7, 0, 2, 2));
+
+        container.add(tableLabel);
+        container.add(optionPane);
+
         container.add(labelQuestion);
         container.add(question);
         container.add(labelAnswer);
@@ -44,10 +52,10 @@ public class UI extends JFrame{
         container.add(answer3);
         container.add(button);
 
-        button.addActionListener(new Listener());
+        button.addActionListener(new ButtonListener());
     }
 
-    class Listener implements ActionListener {
+    class ButtonListener implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -56,17 +64,29 @@ public class UI extends JFrame{
             String answ2 = answer1.getText();
             String answ3 = answer2.getText();
             String answ4 = answer3.getText();
+            String table = optionPane.getSelectedItem().toString();
+            System.out.println(table);
+            dbHelper.setTable(table);
 
             Question dbquestion = new Question(desc, answ1, answ2, answ3, answ4);
             try {
                 dbHelper.insertIntoDB(dbquestion);
                 JOptionPane.showMessageDialog(null, "Question has been added to database", "OUTPUT", JOptionPane.PLAIN_MESSAGE);
+                clearFields();
             } catch (SQLException ex) {
                 JOptionPane.showMessageDialog(null, "An error has been occurred", "OUTPUT", JOptionPane.PLAIN_MESSAGE);
 
                 throw new RuntimeException(ex);
             }
 
+        }
+
+        public void clearFields(){
+            question.setText("");
+            rightAnswer.setText("");
+            answer1.setText("");
+            answer2.setText("");
+            answer3.setText("");
         }
     }
 }
